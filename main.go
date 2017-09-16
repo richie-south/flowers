@@ -7,40 +7,23 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/render"
+	"github.com/richie-south/flowers/api/routes"
 )
 
 func main() {
+
 	fmt.Println("Starting flowers")
 
-	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
+	router := chi.NewRouter()
+	router.Use(middleware.RequestID)
+	router.Use(middleware.RealIP)
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+	router.Use(render.SetContentType(render.ContentTypeJSON))
+	router.Use(middleware.Timeout(60 * time.Second))
 
-	r.Use(middleware.Timeout(60 * time.Second))
+	router.Mount("/api", routes.NewFlowersRoute())
 
-	// REST routes for "flowers"
-	r.Route("/flowers", func(r chi.Router) {
-
-		r.Post("/", createFlower) // POST /flowers
-		r.Get("/", listFlowers)   // GET /flowers
-
-		// Subrouters
-		r.Route("/{flowerID}", func(r chi.Router) {
-			// r.Use(FlowerCtx)
-			r.Get("/", getFlower) // GET /flowers/123
-		})
-	})
-
-	http.ListenAndServe(":3333", r)
-}
-
-func createFlower(w http.ResponseWriter, r *http.Request) {
-}
-
-func listFlowers(w http.ResponseWriter, r *http.Request) {
-}
-
-func getFlower(w http.ResponseWriter, r *http.Request) {
+	http.ListenAndServe(":3000", router)
 }
