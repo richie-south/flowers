@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	mgo "gopkg.in/mgo.v2"
@@ -13,7 +14,7 @@ import (
 	"github.com/richie-south/flowers/app/services"
 )
 
-// FlowerCtx parses id and finds flower object
+// FlowerToContext parses id and finds flower object
 func FlowerToContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		flowerID := chi.URLParam(r, "flowerID")
@@ -74,12 +75,15 @@ func dbGetFlower(id string) (payloads.Flower, error) {
 	result := payloads.Flower{}
 
 	query := func(collection *mgo.Collection) error {
-		return collection.FindId(bson.M{"_id": bson.ObjectIdHex(id)}).One(&result)
+		if bson.IsObjectIdHex(id) {
+			return collection.FindId(bson.M{"_id": bson.ObjectIdHex(id)}).One(&result)
+		}
+		return errors.New("Id not object hex")
 	}
 
 	err := services.WithCollection("flower", query)
 	if err != nil {
-		panic("Error with collection pool")
+		return payloads.Flower{ID: 0, Title: ""}, err
 	}
 	return result, err
 }
