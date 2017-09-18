@@ -1,4 +1,4 @@
-package api
+package payloads
 
 import (
 	"net/http"
