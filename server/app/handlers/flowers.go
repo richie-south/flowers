@@ -11,8 +11,8 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
-	"github.com/richie-south/flowers/app/payloads"
-	"github.com/richie-south/flowers/app/services"
+	"github.com/richie-south/flowers/server/app/payloads"
+	"github.com/richie-south/flowers/server/app/services"
 )
 
 // FlowerToContext parses id and finds flower object

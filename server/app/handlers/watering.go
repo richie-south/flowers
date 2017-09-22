@@ -9,13 +9,13 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
-	"github.com/richie-south/flowers/app/services"
+	"github.com/richie-south/flowers/server/app/services"
 
 	"gopkg.in/mgo.v2/bson"
 
 	"gopkg.in/mgo.v2"
 
-	"github.com/richie-south/flowers/app/payloads"
+	"github.com/richie-south/flowers/server/app/payloads"
 )
 
 func WaterFlower(w http.ResponseWriter, req *http.Request) {

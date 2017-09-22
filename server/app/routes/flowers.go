@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/richie-south/flowers/app/handlers"
+	"github.com/richie-south/flowers/server/app/handlers"
 )
 
 func NewFlowersRoute() http.Handler {
