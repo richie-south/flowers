@@ -20,7 +20,9 @@ func NewFlowersRoute() http.Handler {
 			router.Get("/", handlers.GetFlower) // GET /flowers/123
 
 			// route: set latest watering time
-
+			router.Route("/water", func(router chi.Router) {
+				router.Post("/", handlers.WaterFlower)
+			})
 		})
 	})
 	return router
