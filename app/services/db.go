@@ -18,9 +18,9 @@ func getSession() *mgo.Session {
 	return mgoSession.Clone()
 }
 
-func WithCollection(collection string, s func(*mgo.Collection) error) error {
+func WithCollection(collection string, query func(*mgo.Collection) error) error {
 	session := getSession()
 	defer session.Close()
 	c := session.DB(databaseName).C(collection)
-	return s(c)
+	return query(c)
 }
