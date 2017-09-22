@@ -1,17 +1,26 @@
 package payloads
 
-import "net/http"
+import (
+	"net/http"
+
+	"gopkg.in/mgo.v2/bson"
+)
 
 type WaterTimeline struct {
-	Timestamp string `json:timestamp`
-	Amount    string `json:amount`
+	Timestamp string `json:"timestamp"`
+	Amount    string `json:"amount"`
 }
 
 // Flower type
 type Flower struct {
-	ID               int             `json:"id"`
-	Title            string          `json:"title"`
+	ID               bson.ObjectId   `json:"id" bson:"_id,omitempty"`
+	Name             string          `json:"name"`
 	WateringTimeline []WaterTimeline `json:"waterTimeline"`
+}
+
+// RecivedFlower valid data server can recive
+type RecivedFlower struct {
+	Name string `json:"name"`
 }
 
 func (fl *Flower) Render(w http.ResponseWriter, r *http.Request) error {
@@ -28,12 +37,7 @@ func (fl *Flower) Render(w http.ResponseWriter, r *http.Request) error {
 	 */
 	// default values
 	if fl.WateringTimeline == nil {
-		fl.WateringTimeline = []WaterTimeline{
-			{
-				Timestamp: "hello",
-				Amount:    "wello",
-			},
-		}
+		fl.WateringTimeline = []WaterTimeline{}
 	}
 
 	return nil
