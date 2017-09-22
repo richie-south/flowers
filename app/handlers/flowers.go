@@ -73,14 +73,17 @@ func CreateFlower(w http.ResponseWriter, req *http.Request) {
 
 	id := bson.NewObjectId()
 	flower := &payloads.Flower{
-		ID:   id,
-		Name: f.Name,
+		ID:                       id,
+		Name:                     f.Name,
+		FlowerType:               f.FlowerType,
+		OptimalWateringIntervall: f.OptimalWateringIntervall,
 	}
 
 	err = dbInsertFlower(*flower)
 
 	if err != nil {
 		render.Render(w, req, payloads.ErrWithDatabase)
+		return
 	}
 
 	render.Render(w, req, flower)
