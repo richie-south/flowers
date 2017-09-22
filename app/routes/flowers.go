@@ -12,6 +12,7 @@ func NewFlowersRoute() http.Handler {
 	router.Route("/flowers", func(router chi.Router) {
 
 		router.Get("/", handlers.ListFlowers) // GET /flowers
+		router.Post("/", handlers.CreateFlower)
 
 		// Subrouters
 		router.Route("/{flowerID}", func(router chi.Router) {
