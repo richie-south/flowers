@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -25,18 +26,25 @@ func FlowerToContext(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "flower", flower)
+		ctx := context.WithValue(r.Context(), "flower", &flower)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 func ListFlowers(w http.ResponseWriter, r *http.Request) {
+
+	flowers, err := dbGetFlowers()
+	if err != nil {
+		render.Render(w, r, payloads.ErrWithDatabase)
+		return
+	}
+
 	flowerList := []render.Renderer{}
 	for _, flower := range flowers {
 		flowerList = append(flowerList, flower)
 	}
 
-	err := render.RenderList(w, r, flowerList)
+	err = render.RenderList(w, r, flowerList)
 	if err != nil {
 		render.Render(w, r, payloads.ErrUnexpected)
 		return
@@ -45,6 +53,7 @@ func ListFlowers(w http.ResponseWriter, r *http.Request) {
 
 func GetFlower(w http.ResponseWriter, r *http.Request) {
 	flower := r.Context().Value("flower").(*payloads.Flower)
+
 	err := render.Render(w, r, flower)
 	if err != nil {
 		render.Render(w, r, payloads.ErrUnexpected)
@@ -52,38 +61,78 @@ func GetFlower(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var flowers = []*payloads.Flower{
-	{ID: 1, Title: "Flower 1"},
-	{ID: 2, Title: "Flower 2"},
-	{ID: 3, Title: "Flower 3"},
-	{ID: 4, Title: "Flower 4"},
-	{ID: 5, Title: "Flower 5"},
-	{
-		ID:    6,
-		Title: "Flower 6",
-		WateringTimeline: []payloads.WaterTimeline{
-			{
-				Timestamp: "asd",
-				Amount:    "small",
-			},
-		},
-	},
+func CreateFlower(w http.ResponseWriter, req *http.Request) {
+	decoder := json.NewDecoder(req.Body)
+	f := payloads.RecivedFlower{}
+	err := decoder.Decode(&f)
+	if err != nil {
+		render.Render(w, req, payloads.ErrUnexpected)
+		return
+	}
+	defer req.Body.Close()
+
+	id := bson.NewObjectId()
+	flower := &payloads.Flower{
+		ID:   id,
+		Name: f.Name,
+	}
+
+	err = dbInsertFlower(*flower)
+
+	if err != nil {
+		render.Render(w, req, payloads.ErrWithDatabase)
+	}
+
+	render.Render(w, req, flower)
 }
 
-// only testing implemnt real db later
+func dbGetFlowers() ([]*payloads.Flower, error) {
+	result := []*payloads.Flower{}
+
+	query := func(collection *mgo.Collection) error {
+		return collection.Find(nil).All(&result)
+	}
+
+	err := services.WithCollection("flower", query)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
+}
+
 func dbGetFlower(id string) (payloads.Flower, error) {
 	result := payloads.Flower{}
 
 	query := func(collection *mgo.Collection) error {
 		if bson.IsObjectIdHex(id) {
-			return collection.FindId(bson.M{"_id": bson.ObjectIdHex(id)}).One(&result)
+			return collection.FindId(bson.ObjectIdHex(id)).One(&result)
 		}
 		return errors.New("Id not object hex")
 	}
 
 	err := services.WithCollection("flower", query)
 	if err != nil {
-		return payloads.Flower{ID: 0, Title: ""}, err
+		return result, err
 	}
+
 	return result, err
+}
+
+func dbInsertFlower(flower payloads.Flower) error {
+	query := func(collection *mgo.Collection) error {
+		err := collection.Insert(flower)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	err := services.WithCollection("flower", query)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
