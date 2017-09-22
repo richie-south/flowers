@@ -39,3 +39,4 @@ func ErrRender(err error) render.Renderer {
 
 var ErrNotFound = &ErrResponse{HTTPStatusCode: 404, StatusText: "Resource not found"}
 var ErrUnexpected = &ErrResponse{HTTPStatusCode: 500, StatusText: "Unexpected error"}
+var ErrWithDatabase = &ErrResponse{HTTPStatusCode: 500, StatusText: "Database error"}
