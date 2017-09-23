@@ -1,0 +1,29 @@
+{
+  "include": [
+    "APP_BAR",
+    "BUTTON",
+    "CARD",
+    "CHECKBOX",
+    "CHIP",
+    "DIALOG",
+    "DRAWER",
+    "INPUT",
+    "LAYOUT",
+    "LINK",
+    "LIST",
+    "NAVIGATION",
+    "PROGRESS_BAR",
+    "TABLE",
+    "TABS",
+    "LAYOUT",
+    "CARD",
+    "CHECKBOX",
+    "MENU",
+    "SWITCH",
+    "DROPDOWN",
+    "SNACKBAR",
+    "RADIO",
+    "TOOLTIP"
+  ],
+  "output": "src/styles"
+}

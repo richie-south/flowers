@@ -9,14 +9,23 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.13",
+    "react-toolbox": "^2.0.0-beta.12",
+    "react-toolbox-components": "^0.3.3",
     "recompose": "^0.25.0",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "styled-components": "^2.1.2",
+    "styled-material": "0.1.9"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "toolbox": "react-toolbox-themr --config src/config/toolbox.json"
+  },
+  "devDependencies": {
+    "eslint": "^4.7.2",
+    "react-toolbox-themr": "^1.0.2"
   }
 }
