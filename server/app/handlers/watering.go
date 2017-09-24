@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"github.com/richie-south/flowers/server/app/services"
 
@@ -18,8 +18,17 @@ import (
 	"github.com/richie-south/flowers/server/app/payloads"
 )
 
+func setNextWateringSession(OptimalWateringIntervall float64, timestamp time.Time) time.Time {
+	intpart, floatpart := math.Modf(OptimalWateringIntervall)
+
+	return timestamp.AddDate(0, 0, int(intpart)).Add(
+		time.Hour * time.Duration(floatpart*10))
+}
+
 func WaterFlower(w http.ResponseWriter, req *http.Request) {
-	flowerID := chi.URLParam(req, "flowerID")
+	flowerFromContext := req.Context().Value("flower").(*payloads.Flower)
+	flowerID := fmt.Sprintf("%x", string(flowerFromContext.ID))
+
 	decoder := json.NewDecoder(req.Body)
 	waterAmout := payloads.RecivedWatering{}
 	err := decoder.Decode(&waterAmout)
@@ -29,8 +38,9 @@ func WaterFlower(w http.ResponseWriter, req *http.Request) {
 
 	defer req.Body.Close()
 
+	timestamp := time.Now()
 	waterTimelineItem := &payloads.WaterTimelineItem{
-		Timestamp: time.Now(),
+		Timestamp: timestamp,
 		Amount:    waterAmout.Amount,
 	}
 
@@ -40,7 +50,12 @@ func WaterFlower(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	flower, err := dbGetFlower(flowerID)
+	nextWateringSession := setNextWateringSession(
+		flowerFromContext.OptimalWateringIntervall,
+		timestamp,
+	)
+
+	flower, err := dbUpdateNextWateringSessionFlower(flowerID, nextWateringSession)
 	if err != nil {
 		render.Render(w, req, payloads.ErrWithDatabase)
 		return
@@ -58,7 +73,6 @@ func dbAddToWaterTimeline(id string, waterTime payloads.WaterTimelineItem) error
 			)
 
 			if err != nil {
-				fmt.Println("error", err)
 				return err
 			}
 
