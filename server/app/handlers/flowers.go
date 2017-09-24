@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"time"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -77,6 +78,7 @@ func CreateFlower(w http.ResponseWriter, req *http.Request) {
 		Name:                     f.Name,
 		FlowerType:               f.FlowerType,
 		OptimalWateringIntervall: f.OptimalWateringIntervall,
+		NextWateringSession:      time.Now(),
 	}
 
 	err = dbInsertFlower(*flower)
@@ -138,4 +140,29 @@ func dbInsertFlower(flower payloads.Flower) error {
 	}
 
 	return nil
+}
+
+func dbUpdateNextWateringSessionFlower(id string, nextWateringSession time.Time) (payloads.Flower, error) {
+	query := func(collection *mgo.Collection) error {
+		if bson.IsObjectIdHex(id) {
+			err := collection.Update(
+				bson.M{"_id": bson.ObjectIdHex(id)},
+				bson.M{"$set": bson.M{"nextWateringSession": nextWateringSession}},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return nil
+		}
+		return errors.New("Id not object hex")
+	}
+
+	err := services.WithCollection("flower", query)
+	if err != nil {
+		return payloads.Flower{}, err
+	}
+
+	return dbGetFlower(id)
 }
