@@ -20,16 +20,17 @@ type RecivedWatering struct {
 type Flower struct {
 	ID                       bson.ObjectId       `json:"id" bson:"_id,omitempty"`
 	Name                     string              `json:"name"`
-	FlowerType               string              `json:"flowerType"`
-	OptimalWateringIntervall int                 `json:"optimalWateringIntervall"`
+	FlowerType               string              `json:"flowerType" bson:"flowerType"`
+	OptimalWateringIntervall float64             `json:"optimalWateringIntervall" bson:"optimalWateringIntervall"`
 	WateringTimeline         []WaterTimelineItem `json:"waterTimeline" bson:"waterTimeline"`
+	NextWateringSession      time.Time           `json:"nextWateringSession" bson:"nextWateringSession"`
 }
 
 // RecivedFlower valid data server can recive
 type RecivedFlower struct {
-	Name                     string `json:"name"`
-	FlowerType               string `json:"flowerType"`
-	OptimalWateringIntervall int    `json:"optimalWateringIntervall"`
+	Name                     string  `json:"name"`
+	FlowerType               string  `json:"flowerType"`
+	OptimalWateringIntervall float64 `json:"optimalWateringIntervall"`
 }
 
 func (flower *Flower) Render(w http.ResponseWriter, r *http.Request) error {
@@ -45,6 +46,7 @@ func (flower *Flower) Render(w http.ResponseWriter, r *http.Request) error {
 	 *
 	 */
 	// default values
+
 	if flower.WateringTimeline == nil {
 		flower.WateringTimeline = []WaterTimelineItem{}
 	}
