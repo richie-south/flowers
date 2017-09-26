@@ -3,17 +3,25 @@ import {compose, withHandlers, withState, defaultProps} from 'recompose'
 import Layout from 'react-toolbox/lib/layout/Layout'
 import Panel from 'react-toolbox/lib/layout/Panel'
 import AppBar from 'react-toolbox/lib/app_bar/AppBar'
-import {ListFlowers} from '../../ui/list-flowers'
+import Route from 'react-router/Route'
+import Switch from 'react-router/Switch'
+import {FlowersOverview} from '../flowers/flowers-overview'
+import {Flower} from '../flowers/flower'
 
-const enhance = compose(
+const enhance = compose()
+
+const FlowerRoutes = () => (
+  <Switch>
+    <Route exact path="/" component={FlowersOverview} />
+    <Route path="/:id" component={Flower} />
+  </Switch>
 )
 
 export const StatelessHome = ({}) => (
   <Layout>
     <Panel>
       <AppBar title="Flowers" />
-      <h1>HOME</h1>
-      <ListFlowers />
+      <FlowerRoutes />
     </Panel>
   </Layout>
 )
