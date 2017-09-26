@@ -4,8 +4,10 @@
   "private": true,
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
+    "mdi-react": "^2.0.46",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-intl": "^2.4.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.13",
