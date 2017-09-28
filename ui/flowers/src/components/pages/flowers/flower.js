@@ -54,7 +54,8 @@ export const StatelessFlower = ({flower, waterFlower, intl}) => (
     {console.log(flower)}
     <Row horizontal="space-evenly">
       <Row>{flower.flowerType}</Row>
-      <Row>{flower.optimalWateringIntervallText}</Row>
+      <Row>{flower.waterIntervall.optimalText}</Row>
+      <Row>{flower.waterIntervall.currentText}</Row>
     </Row>
     <Button
       onClick={() => waterFlower('medium')}
