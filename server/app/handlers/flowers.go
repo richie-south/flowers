@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"github.com/richie-south/flowers/server/app/lib"
 	"github.com/richie-south/flowers/server/app/payloads"
 	"github.com/richie-south/flowers/server/app/services"
 )
@@ -74,11 +75,15 @@ func CreateFlower(w http.ResponseWriter, req *http.Request) {
 
 	id := bson.NewObjectId()
 	flower := &payloads.Flower{
-		ID:                       id,
-		Name:                     f.Name,
-		FlowerType:               f.FlowerType,
-		OptimalWateringIntervall: f.OptimalWateringIntervall,
-		NextWateringSession:      time.Now(),
+		ID:         id,
+		Name:       f.Name,
+		FlowerType: f.FlowerType,
+		WaterIntervall: payloads.WaterIntervall{
+			Optimal:     f.OptimalWateringIntervall,
+			OptimalText: lib.WateringIntervallToText(f.OptimalWateringIntervall),
+			CurrentText: "",
+		},
+		NextWateringSession: time.Now(),
 	}
 
 	err = dbInsertFlower(*flower)
@@ -142,7 +147,7 @@ func dbInsertFlower(flower payloads.Flower) error {
 	return nil
 }
 
-func dbUpdateNextWateringSessionFlower(id string, nextWateringSession time.Time) (payloads.Flower, error) {
+func dbUpdateNextWateringSessionFlower(id string, nextWateringSession time.Time) error {
 	query := func(collection *mgo.Collection) error {
 		if bson.IsObjectIdHex(id) {
 			err := collection.Update(
@@ -161,8 +166,33 @@ func dbUpdateNextWateringSessionFlower(id string, nextWateringSession time.Time)
 
 	err := services.WithCollection("flower", query)
 	if err != nil {
-		return payloads.Flower{}, err
+		return err
 	}
 
-	return dbGetFlower(id)
+	return nil
+}
+
+func dbUpdateCurrentWaterIntervall(id string, intervall string) error {
+	query := func(collection *mgo.Collection) error {
+		if bson.IsObjectIdHex(id) {
+			err := collection.Update(
+				bson.M{"_id": bson.ObjectIdHex(id)},
+				bson.M{"$set": bson.M{"waterIntervall.currentText": intervall}},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return nil
+		}
+		return errors.New("Id not object hex")
+	}
+
+	err := services.WithCollection("flower", query)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
