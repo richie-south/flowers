@@ -15,6 +15,7 @@ import (
 
 	"gopkg.in/mgo.v2"
 
+	"github.com/richie-south/flowers/server/app/lib"
 	"github.com/richie-south/flowers/server/app/payloads"
 )
 
@@ -51,11 +52,40 @@ func WaterFlower(w http.ResponseWriter, req *http.Request) {
 	}
 
 	nextWateringSession := setNextWateringSession(
-		flowerFromContext.OptimalWateringIntervall,
+		flowerFromContext.WaterIntervall.Optimal,
 		timestamp,
 	)
 
-	flower, err := dbUpdateNextWateringSessionFlower(flowerID, nextWateringSession)
+	err = dbUpdateNextWateringSessionFlower(flowerID, nextWateringSession)
+	if err != nil {
+		render.Render(w, req, payloads.ErrWithDatabase)
+		return
+	}
+
+	flower, err := dbGetFlower(flowerID)
+	if err != nil {
+		render.Render(w, req, payloads.ErrWithDatabase)
+		return
+	}
+
+	if len(flower.WateringTimeline) > 1 {
+		latestItem := flower.WateringTimeline[len(flower.WateringTimeline)-1]
+		secondLatestItem := flower.WateringTimeline[len(flower.WateringTimeline)-2]
+
+		diffFloat, err := lib.DifferenceInDaysHoursToFloat(latestItem.Timestamp, secondLatestItem.Timestamp)
+		if err != nil {
+			render.Render(w, req, payloads.ErrUnexpected)
+			return
+		}
+
+		err = dbUpdateCurrentWaterIntervall(flowerID, lib.WateringIntervallToText(diffFloat))
+		if err != nil {
+			render.Render(w, req, payloads.ErrWithDatabase)
+			return
+		}
+	}
+
+	flower, err = dbGetFlower(flowerID)
 	if err != nil {
 		render.Render(w, req, payloads.ErrWithDatabase)
 		return
