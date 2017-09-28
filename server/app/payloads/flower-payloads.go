@@ -12,18 +12,24 @@ type WaterTimelineItem struct {
 	Amount    string    `json:"amount"`
 }
 
+type WaterIntervall struct {
+	Optimal     float64 `json:"optimal"`
+	OptimalText string  `json:"optimalText" bson:"optimalText"`
+	CurrentText string  `json:"currentText" bson:"currentText"`
+}
+
 type RecivedWatering struct {
 	Amount string `json:"amount"`
 }
 
 // Flower type
 type Flower struct {
-	ID                       bson.ObjectId       `json:"id" bson:"_id,omitempty"`
-	Name                     string              `json:"name"`
-	FlowerType               string              `json:"flowerType" bson:"flowerType"`
-	OptimalWateringIntervall float64             `json:"optimalWateringIntervall" bson:"optimalWateringIntervall"`
-	WateringTimeline         []WaterTimelineItem `json:"waterTimeline" bson:"waterTimeline"`
-	NextWateringSession      time.Time           `json:"nextWateringSession" bson:"nextWateringSession"`
+	ID                  bson.ObjectId       `json:"id" bson:"_id,omitempty"`
+	Name                string              `json:"name"`
+	FlowerType          string              `json:"flowerType" bson:"flowerType"`
+	WaterIntervall      WaterIntervall      `json:"waterIntervall" bson:"waterIntervall"`
+	WateringTimeline    []WaterTimelineItem `json:"waterTimeline" bson:"waterTimeline"`
+	NextWateringSession time.Time           `json:"nextWateringSession" bson:"nextWateringSession"`
 }
 
 // RecivedFlower valid data server can recive
@@ -46,6 +52,7 @@ func (flower *Flower) Render(w http.ResponseWriter, r *http.Request) error {
 	 *
 	 */
 	// default values
+	// check if NextWateringSession date has passed if has passed set date to now
 
 	if flower.WateringTimeline == nil {
 		flower.WateringTimeline = []WaterTimelineItem{}
