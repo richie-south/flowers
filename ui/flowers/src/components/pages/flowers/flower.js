@@ -16,6 +16,9 @@ import Button from 'react-toolbox/lib/button/Button'
 import AlertIcon from 'mdi-react/WaterPumpIcon'
 import {post} from '../../../lib/http'
 import {Column, Row} from 'styled-material/dist/src/layout'
+import styled from 'styled-components'
+import {Caption, Subhead, Title} from 'styled-material/dist/src/typography'
+import {materialColors} from 'styled-material/dist/src/colors'
 
 const enhance = compose(
   withState('data', 'setData', {loading: true}),
@@ -48,15 +51,80 @@ const enhance = compose(
   injectIntl
 )
 
-export const StatelessFlower = ({flower, waterFlower, intl}) => (
+const StyledCaption = styled(Caption)`
+  color: ${materialColors['grey-700']};
+  margin-top: 6px;
+`
+
+const StyledRow = styled(Row)`
+  padding: 16px;
+  border-top: 2px solid rgba(121, 85, 72, 0.1);
+`
+
+const StyledBlockSubhead = styled(Subhead)`
+  font-size: 18px;
+  color: ${materialColors['amber-500']};
+`
+
+const Block = ({title, data = 'No data!'}) => (
+  <StyledRow style={{flex: 1}}>
+    <Column horizontal="center">
+      <Row>
+        <StyledBlockSubhead>
+          {data.length === 0 ? 'No data!' : data}
+        </StyledBlockSubhead>
+      </Row>
+      <Row>
+        <StyledCaption>{title}</StyledCaption>
+      </Row>
+    </Column>
+  </StyledRow>
+)
+
+const StyledColumnWraper = styled(Column)`
+  position: absolute;
+  z-index: -1;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+`
+
+const Top = ({flower}) => (
   <div>
-    <h1>Flower</h1>
-    {console.log(flower)}
+    <Column
+      horizontal="center"
+      style={{
+        marginBottom: 24,
+        marginTop: 24
+      }}
+    >
+      <Row>
+        <Title style={{opacity: 0.8}}>Flower</Title>
+      </Row>
+      <Row>
+        <Subhead style={{opacity: 0.8}}>{flower.flowerType}</Subhead>
+      </Row>
+    </Column>
+
     <Row horizontal="space-evenly">
-      <Row>{flower.flowerType}</Row>
-      <Row>{flower.waterIntervall.optimalText}</Row>
-      <Row>{flower.waterIntervall.currentText}</Row>
+      <Block title="Times watered" data={flower.waterTimeline.length} />
+      <Block
+        title="Optimal intervall"
+        data={flower.waterIntervall.optimal.text}
+      />
+      <Block
+        title="Current intervall"
+        data={flower.waterIntervall.current.text}
+      />
     </Row>
+  </div>
+)
+
+export const StatelessFlower = ({flower, waterFlower}) => (
+  <div>
+    {console.log(flower)}
+    <StyledColumnWraper>
+      <Top flower={flower} />
+    </StyledColumnWraper>
     <Button
       onClick={() => waterFlower('medium')}
       style={{
