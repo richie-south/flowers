@@ -14,11 +14,12 @@ import {injectIntl} from 'react-intl'
 
 const enhance = compose(injectIntl)
 
-export const StatelessListFlowers = ({flowers, intl}) => (
+export const StatelessListFlowers = ({viewFlower, flowers, intl}) => (
   <List>
     {flowers.map(({id, name, nextWateringSession}) => (
       <ListItem
         key={id}
+        onClick={() => viewFlower(id)}
         caption={name}
         legend={'KING'}
         leftIcon="local_florist"

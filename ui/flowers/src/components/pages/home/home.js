@@ -13,7 +13,7 @@ const enhance = compose()
 const FlowerRoutes = () => (
   <Switch>
     <Route exact path="/" component={FlowersOverview} />
-    <Route path="/:id" component={Flower} />
+    <Route exact path="/:id" component={Flower} />
   </Switch>
 )
 
