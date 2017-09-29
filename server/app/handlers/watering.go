@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math"
 	"net/http"
 	"time"
 
@@ -19,11 +18,9 @@ import (
 	"github.com/richie-south/flowers/server/app/payloads"
 )
 
-func setNextWateringSession(OptimalWateringIntervall float64, timestamp time.Time) time.Time {
-	intpart, floatpart := math.Modf(OptimalWateringIntervall)
-
-	return timestamp.AddDate(0, 0, int(intpart)).Add(
-		time.Hour * time.Duration(floatpart*10))
+func setNextWateringSession(intervall payloads.Intervall, timestamp time.Time) time.Time {
+	return timestamp.AddDate(0, 0, intervall.Days).Add(
+		time.Hour * time.Duration(intervall.Hours))
 }
 
 func WaterFlower(w http.ResponseWriter, req *http.Request) {
@@ -62,30 +59,20 @@ func WaterFlower(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	flower, err := dbGetFlower(flowerID)
-	if err != nil {
-		render.Render(w, req, payloads.ErrWithDatabase)
-		return
-	}
+	// add +1 to compensate for resently added water timeline item
+	if len(flowerFromContext.WateringTimeline)+1 > 1 {
+		latestItem := waterTimelineItem
+		secondLatestItem := flowerFromContext.WateringTimeline[len(flowerFromContext.WateringTimeline)-1]
+		intervall := lib.DifferenceInDaysHoursToIntervall(latestItem.Timestamp, secondLatestItem.Timestamp)
 
-	if len(flower.WateringTimeline) > 1 {
-		latestItem := flower.WateringTimeline[len(flower.WateringTimeline)-1]
-		secondLatestItem := flower.WateringTimeline[len(flower.WateringTimeline)-2]
-
-		diffFloat, err := lib.DifferenceInDaysHoursToFloat(latestItem.Timestamp, secondLatestItem.Timestamp)
-		if err != nil {
-			render.Render(w, req, payloads.ErrUnexpected)
-			return
-		}
-
-		err = dbUpdateCurrentWaterIntervall(flowerID, lib.WateringIntervallToText(diffFloat))
+		err = dbUpdateCurrentWaterIntervall(flowerID, intervall.ToText())
 		if err != nil {
 			render.Render(w, req, payloads.ErrWithDatabase)
 			return
 		}
 	}
 
-	flower, err = dbGetFlower(flowerID)
+	flower, err := dbGetFlower(flowerID)
 	if err != nil {
 		render.Render(w, req, payloads.ErrWithDatabase)
 		return
