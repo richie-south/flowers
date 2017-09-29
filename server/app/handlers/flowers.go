@@ -12,7 +12,6 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
-	"github.com/richie-south/flowers/server/app/lib"
 	"github.com/richie-south/flowers/server/app/payloads"
 	"github.com/richie-south/flowers/server/app/services"
 )
@@ -72,6 +71,7 @@ func CreateFlower(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer req.Body.Close()
+	f.OptimalWateringIntervall.ToText()
 
 	id := bson.NewObjectId()
 	flower := &payloads.Flower{
@@ -80,7 +80,6 @@ func CreateFlower(w http.ResponseWriter, req *http.Request) {
 		FlowerType: f.FlowerType,
 		WaterIntervall: payloads.WaterIntervall{
 			Optimal:     f.OptimalWateringIntervall,
-			OptimalText: lib.WateringIntervallToText(f.OptimalWateringIntervall),
 			CurrentText: "",
 		},
 		NextWateringSession: time.Now(),
