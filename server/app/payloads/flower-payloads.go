@@ -12,16 +12,6 @@ type WaterTimelineItem struct {
 	Amount    string    `json:"amount"`
 }
 
-type WaterIntervall struct {
-	Optimal     float64 `json:"optimal"`
-	OptimalText string  `json:"optimalText" bson:"optimalText"`
-	CurrentText string  `json:"currentText" bson:"currentText"`
-}
-
-type RecivedWatering struct {
-	Amount string `json:"amount"`
-}
-
 // Flower type
 type Flower struct {
 	ID                  bson.ObjectId       `json:"id" bson:"_id,omitempty"`
@@ -32,11 +22,16 @@ type Flower struct {
 	NextWateringSession time.Time           `json:"nextWateringSession" bson:"nextWateringSession"`
 }
 
-// RecivedFlower valid data server can recive
+// RecivedWatering valid data server can recive when watering flower
+type RecivedWatering struct {
+	Amount string `json:"amount"`
+}
+
+// RecivedFlower valid data server can recive creating flower
 type RecivedFlower struct {
-	Name                     string  `json:"name"`
-	FlowerType               string  `json:"flowerType"`
-	OptimalWateringIntervall float64 `json:"optimalWateringIntervall"`
+	Name                     string    `json:"name"`
+	FlowerType               string    `json:"flowerType"`
+	OptimalWateringIntervall Intervall `json:"optimalWateringIntervall"`
 }
 
 func (flower *Flower) Render(w http.ResponseWriter, r *http.Request) error {
