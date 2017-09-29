@@ -79,8 +79,12 @@ func CreateFlower(w http.ResponseWriter, req *http.Request) {
 		Name:       f.Name,
 		FlowerType: f.FlowerType,
 		WaterIntervall: payloads.WaterIntervall{
-			Optimal:     f.OptimalWateringIntervall,
-			CurrentText: "",
+			Optimal: f.OptimalWateringIntervall,
+			Current: payloads.Intervall{
+				Hours: 0,
+				Days:  0,
+				Text:  "",
+			},
 		},
 		NextWateringSession: time.Now(),
 	}
@@ -171,12 +175,12 @@ func dbUpdateNextWateringSessionFlower(id string, nextWateringSession time.Time)
 	return nil
 }
 
-func dbUpdateCurrentWaterIntervall(id string, intervall string) error {
+func dbUpdateCurrentWaterIntervall(id string, intervall payloads.Intervall) error {
 	query := func(collection *mgo.Collection) error {
 		if bson.IsObjectIdHex(id) {
 			err := collection.Update(
 				bson.M{"_id": bson.ObjectIdHex(id)},
-				bson.M{"$set": bson.M{"waterIntervall.currentText": intervall}},
+				bson.M{"$set": bson.M{"waterIntervall.current": intervall}},
 			)
 
 			if err != nil {

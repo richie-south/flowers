@@ -64,8 +64,8 @@ func WaterFlower(w http.ResponseWriter, req *http.Request) {
 		latestItem := waterTimelineItem
 		secondLatestItem := flowerFromContext.WateringTimeline[len(flowerFromContext.WateringTimeline)-1]
 		intervall := lib.DifferenceInDaysHoursToIntervall(latestItem.Timestamp, secondLatestItem.Timestamp)
-
-		err = dbUpdateCurrentWaterIntervall(flowerID, intervall.ToText())
+		intervall.ToText()
+		err = dbUpdateCurrentWaterIntervall(flowerID, intervall)
 		if err != nil {
 			render.Render(w, req, payloads.ErrWithDatabase)
 			return
