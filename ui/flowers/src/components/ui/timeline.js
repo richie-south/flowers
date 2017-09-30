@@ -29,8 +29,6 @@ const enhance = compose(
   withState('displayMore', 'setDisplayMore', false)
 )
 
-const TimelineWapper = () => {}
-
 const StyledTimelineItemWrap = styled(Row)`
   margin-left: 16px;
   height: 64px;
@@ -44,8 +42,6 @@ const StyledTimelineItemBorder = styled(Row)`
   margin-left: 6px;
   margin-right: 22px;
 `
-
-const StyledTimelineItemElementWrap = styled(Row)``
 
 const StyledIconWarp = styled.div`
   margin-right: -18px;
@@ -80,7 +76,7 @@ const TimelineItem = ({timestamp, children, icon}) => (
     <StyledTimelineItemBorder vertical="center">
       <StyledIconWarp>{icon}</StyledIconWarp>
     </StyledTimelineItemBorder>
-    <StyledTimelineItemElementWrap>{children}</StyledTimelineItemElementWrap>
+    <Row>{children}</Row>
   </StyledTimelineItemWrap>
 )
 
