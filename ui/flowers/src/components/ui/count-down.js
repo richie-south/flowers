@@ -7,7 +7,6 @@ import {
   lifecycle
 } from 'recompose'
 import {withSpinner} from 'react-with-spinner'
-import {injectIntl} from 'react-intl'
 import Avatar from 'react-toolbox/lib/avatar/Avatar'
 import IconButton from 'react-toolbox/lib/button/IconButton'
 import Button from 'react-toolbox/lib/button/Button'
@@ -28,7 +27,11 @@ export const StyledCardTitle = styled(CardTitle)`
     color: ${materialColors['amber-500']};
   }
 `
-export const StyledCard = styled(Card)`max-width: 500px !important;`
+export const StyledCard = styled(Card)`
+  max-width: 500px !important;
+  margin-top: 8px;
+  margin-bottom: 8px;
+`
 
 const getTimeRemaining = endtime => {
   const total = Date.parse(endtime) - Date.parse(new Date())
@@ -67,8 +70,7 @@ const enhance = compose(
       const {intervalId} = this.props
       clearInterval(intervalId)
     }
-  }),
-  injectIntl
+  })
 )
 
 export const StatelessCountDownCard = ({
@@ -76,7 +78,7 @@ export const StatelessCountDownCard = ({
 }) => (
   <StyledCard>
     <StyledCardTitle
-      subtitle='Next watering sessions in:'
+      subtitle='Next watering sessions in'
       title={`${days}d:${hours}h:${minutes}m:${seconds}s`}
     />
   </StyledCard>

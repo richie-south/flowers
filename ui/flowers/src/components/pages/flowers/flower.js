@@ -8,7 +8,6 @@ import {
 } from 'recompose'
 import {withSpinner} from 'react-with-spinner'
 import {GET_FLOWER_URL, WATER_FLOWER_URL} from '../../../config/urls'
-import {injectIntl} from 'react-intl'
 import {ListFlowers} from '../../ui/list-flowers'
 import Avatar from 'react-toolbox/lib/avatar/Avatar'
 import IconButton from 'react-toolbox/lib/button/IconButton'
@@ -49,8 +48,7 @@ const enhance = compose(
         .catch(error => console.log(error))
     }
   }),
-  withSpinner(),
-  injectIntl
+  withSpinner()
 )
 
 const StyledCaption = styled(Caption)`
@@ -83,16 +81,11 @@ const Block = ({title, data = 'No data!'}) => (
   </StyledRow>
 )
 
-const StyledColumnWraper = styled(Column)`
-  position: absolute;
-  z-index: -1;
-`
-
 const StyledDivWraper = styled.div`
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-bottom: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 `
 
 const Top = ({flower}) => (
@@ -126,17 +119,16 @@ const Top = ({flower}) => (
   </StyledDivWraper>
 )
 
-// <Timeline timeline={flower.waterTimeline.reverse()} />
-
 export const StatelessFlower = ({flower, waterFlower}) => (
   <div>
     {console.log(flower)}
-    <StyledColumnWraper>
+    <Column>
       <Top flower={flower} />
       <Column horizontal="center">
         <CountDownCard end={new Date(flower.nextWateringSession)} />
+        <Timeline timeline={flower.waterTimeline.reverse()} />
       </Column>
-    </StyledColumnWraper>
+    </Column>
     <Button
       onClick={() => waterFlower('medium')}
       style={{
@@ -146,7 +138,9 @@ export const StatelessFlower = ({flower, waterFlower}) => (
       }}
       floating
       accent
-      icon={<WaterPumpIcon />}
+      icon={<WaterPumpIcon style={{
+        fill: 'white'
+      }}/>}
     />
   </div>
 )

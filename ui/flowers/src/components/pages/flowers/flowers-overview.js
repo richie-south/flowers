@@ -11,7 +11,6 @@ import List from 'react-toolbox/lib/list/List'
 import Redirect from 'react-router/Redirect'
 import ListItem from 'react-toolbox/lib/list/ListItem'
 import {GET_FLOWER_LIST_URL} from '../../../config/urls'
-import {injectIntl} from 'react-intl'
 import {ListFlowers} from '../../ui/list-flowers'
 
 const enhance = compose(
@@ -38,8 +37,7 @@ const enhance = compose(
         })
     }
   }),
-  withSpinner(),
-  injectIntl
+  withSpinner()
 )
 
 export const StatelessFlowersOverview = ({
@@ -47,10 +45,12 @@ export const StatelessFlowersOverview = ({
   intl,
   redirect,
   viewFlower,
-}) =>
-    <div>
-      <h1>Flowers list</h1>
-      <ListFlowers flowers={flowers} />
-    </div>
+  match
+}) => (
+  <div>
+    <h1>Flowers list</h1>
+    <ListFlowers flowers={flowers} match={match} />
+  </div>
+)
 
 export const FlowersOverview = enhance(StatelessFlowersOverview)
