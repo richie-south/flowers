@@ -12,21 +12,31 @@ import ListItem from 'react-toolbox/lib/list/ListItem'
 import {GET_FLOWER_LIST_URL} from '../../config/urls'
 import {injectIntl} from 'react-intl'
 import {CountDownSpan} from './count-down'
+import Redirect from 'react-router/Redirect'
 
-const enhance = compose(injectIntl)
+const enhance = compose(withState('redirect', 'setRedirect', ''), injectIntl)
 
-export const StatelessListFlowers = ({viewFlower, flowers, intl}) => (
-  <List>
-    {flowers.map(({id, name, nextWateringSession}) => (
-      <ListItem
-        key={id}
-        onClick={() => viewFlower(id)}
-        caption={name}
-        legend={<CountDownSpan end={new Date(nextWateringSession)} />}
-        leftIcon="local_florist"
-      />
-    ))}
-  </List>
-)
+export const StatelessListFlowers = ({
+  redirect,
+  setRedirect,
+  viewFlower,
+  flowers,
+  intl
+}) =>
+  redirect ? (
+    <Redirect to={redirect} />
+  ) : (
+    <List>
+      {flowers.map(({id, name, nextWateringSession}) => (
+        <ListItem
+          key={id}
+          onClick={() => setRedirect(id)}
+          caption={name}
+          legend={<CountDownSpan end={new Date(nextWateringSession)} />}
+          leftIcon="local_florist"
+        />
+      ))}
+    </List>
+  )
 
 export const ListFlowers = enhance(StatelessListFlowers)

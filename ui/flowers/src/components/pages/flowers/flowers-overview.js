@@ -17,14 +17,12 @@ import {ListFlowers} from '../../ui/list-flowers'
 const enhance = compose(
   withState('data', 'setData', {loading: true}),
   withState('flowers', 'setFlowers', []),
-  withState('redirect', 'setRedirect', ''),
   withHandlers({
     setLoading: ({setData}) => isLoading =>
       setData(data => ({
         ...data,
         loading: isLoading
-      })),
-    viewFlower: ({setRedirect}) => id => setRedirect(id)
+      }))
   }),
   lifecycle({
     componentDidMount(props) {
@@ -50,13 +48,9 @@ export const StatelessFlowersOverview = ({
   redirect,
   viewFlower,
 }) =>
-  redirect ? (
-    <Redirect to={redirect} />
-  ) : (
     <div>
       <h1>Flowers list</h1>
-      <ListFlowers viewFlower={viewFlower} flowers={flowers} />
+      <ListFlowers flowers={flowers} />
     </div>
-  )
 
 export const FlowersOverview = enhance(StatelessFlowersOverview)
