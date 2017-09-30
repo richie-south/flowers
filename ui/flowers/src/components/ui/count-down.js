@@ -16,7 +16,6 @@ import {Column, Row} from 'styled-material/dist/src/layout'
 import styled from 'styled-components'
 import {Caption, Subhead, Title} from 'styled-material/dist/src/typography'
 import {materialColors} from 'styled-material/dist/src/colors'
-
 import Card from 'react-toolbox/lib/card/Card'
 import CardMedia from 'react-toolbox/lib/card/CardMedia'
 import CardTitle from 'react-toolbox/lib/card/CardTitle'
@@ -57,8 +56,9 @@ const enhance = compose(
   }),
   lifecycle({
     componentDidMount() {
-      const {setIntervalId, setTimeRemaining, timeRemaining, end} = this.props
+      const {setIntervalId, setTimeRemaining, timeRemaining} = this.props
       const intervalId = setInterval(() => {
+        const {end} = this.props
         setTimeRemaining(getTimeRemaining(end))
       }, 1000)
       setIntervalId(intervalId)
@@ -76,7 +76,7 @@ export const StatelessCountDownCard = ({
 }) => (
   <StyledCard>
     <StyledCardTitle
-      subtitle="Next watering sessions in:"
+      subtitle='Next watering sessions in:'
       title={`${days}d:${hours}h:${minutes}m:${seconds}s`}
     />
   </StyledCard>
