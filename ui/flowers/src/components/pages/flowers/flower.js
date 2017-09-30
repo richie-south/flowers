@@ -13,12 +13,14 @@ import {ListFlowers} from '../../ui/list-flowers'
 import Avatar from 'react-toolbox/lib/avatar/Avatar'
 import IconButton from 'react-toolbox/lib/button/IconButton'
 import Button from 'react-toolbox/lib/button/Button'
-import AlertIcon from 'mdi-react/WaterPumpIcon'
+import WaterPumpIcon from 'mdi-react/WaterPumpIcon'
 import {post} from '../../../lib/http'
 import {Column, Row} from 'styled-material/dist/src/layout'
 import styled from 'styled-components'
 import {Caption, Subhead, Title} from 'styled-material/dist/src/typography'
 import {materialColors} from 'styled-material/dist/src/colors'
+import {Timeline} from '../../ui/timeline'
+import {CountDownCard} from '../../ui/count-down'
 
 const enhance = compose(
   withState('data', 'setData', {loading: true}),
@@ -84,12 +86,17 @@ const Block = ({title, data = 'No data!'}) => (
 const StyledColumnWraper = styled(Column)`
   position: absolute;
   z-index: -1;
+`
+
+const StyledDivWraper = styled.div`
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-bottom: 16px;
+  margin-bottom: 16px;
 `
 
 const Top = ({flower}) => (
-  <div>
+  <StyledDivWraper>
     <Column
       horizontal="center"
       style={{
@@ -116,14 +123,19 @@ const Top = ({flower}) => (
         data={flower.waterIntervall.current.text}
       />
     </Row>
-  </div>
+  </StyledDivWraper>
 )
+
+// <Timeline timeline={flower.waterTimeline.reverse()} />
 
 export const StatelessFlower = ({flower, waterFlower}) => (
   <div>
     {console.log(flower)}
     <StyledColumnWraper>
       <Top flower={flower} />
+      <Column horizontal="center">
+        <CountDownCard end={new Date(flower.nextWateringSession)} />
+      </Column>
     </StyledColumnWraper>
     <Button
       onClick={() => waterFlower('medium')}
@@ -134,7 +146,7 @@ export const StatelessFlower = ({flower, waterFlower}) => (
       }}
       floating
       accent
-      icon={<AlertIcon />}
+      icon={<WaterPumpIcon />}
     />
   </div>
 )

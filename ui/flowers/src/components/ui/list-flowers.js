@@ -11,6 +11,7 @@ import List from 'react-toolbox/lib/list/List'
 import ListItem from 'react-toolbox/lib/list/ListItem'
 import {GET_FLOWER_LIST_URL} from '../../config/urls'
 import {injectIntl} from 'react-intl'
+import {CountDownSpan} from './count-down'
 
 const enhance = compose(injectIntl)
 
@@ -21,7 +22,7 @@ export const StatelessListFlowers = ({viewFlower, flowers, intl}) => (
         key={id}
         onClick={() => viewFlower(id)}
         caption={name}
-        legend={'KING'}
+        legend={<CountDownSpan end={new Date(nextWateringSession)} />}
         leftIcon="local_florist"
       />
     ))}
