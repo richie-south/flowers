@@ -25,9 +25,7 @@ import {StyledCard} from './count-down'
 import {Caption, Body} from 'styled-material/dist/src/typography'
 import Button from 'react-toolbox/lib/button/Button'
 
-const enhance = compose(
-  withState('displayMore', 'setDisplayMore', false)
-)
+const enhance = compose(withState('displayMore', 'setDisplayMore', false))
 
 const StyledTimelineItemWrap = styled(Row)`
   margin-left: 16px;
@@ -59,6 +57,17 @@ const StyledTimelineitemCaption = styled(Caption)`
   font-size: 10px;
 `
 
+const EmmptyTimeline = () => (
+  <Row
+    horizontal="center"
+    style={{
+      margin: 16
+    }}
+  >
+    <Caption>No timline entrys</Caption>
+  </Row>
+)
+
 const TimelineItem = ({timestamp, children, icon}) => (
   <StyledTimelineItemWrap>
     <Column style={{flex: 0}}>
@@ -83,32 +92,36 @@ const TimelineItem = ({timestamp, children, icon}) => (
 export const StatelessTimeline = ({timeline, displayMore, setDisplayMore}) => (
   <StyledCard>
     <CardTitle subtitle="Flower watering timeline" />
-    {timeline
-      .slice(0, displayMore ? timeline.length : 4)
-      .map(({timestamp, amount}, i) => (
-        <TimelineItem
-          key={i}
-          timestamp={new Date(timestamp)}
-          icon={
-            <WaterPumpIcon
-              style={{
-                height: 16,
-                fill: materialColors['amber-600']
-              }}
-            />
-          }
-        >
-          <Body>Amount: {amount}</Body>
-        </TimelineItem>
-      ))}
-    {!displayMore && (
-      <Button
-        label="Show more"
-        raised
-        primary
-        onClick={() => setDisplayMore(true)}
-      />
+    {timeline.length ? (
+      timeline
+        .slice(0, displayMore ? timeline.length : 4)
+        .map(({timestamp, amount}, i) => (
+          <TimelineItem
+            key={i}
+            timestamp={new Date(timestamp)}
+            icon={
+              <WaterPumpIcon
+                style={{
+                  height: 16,
+                  fill: materialColors['amber-600']
+                }}
+              />
+            }
+          >
+            <Body>Amount: {amount}</Body>
+          </TimelineItem>
+        ))
+    ) : (
+      <EmmptyTimeline />
     )}
+    {!displayMore && timeline.length > 4 ? (
+        <Button
+          label="Show more"
+          raised
+          primary
+          onClick={() => setDisplayMore(true)}
+        />
+      ) : null}
   </StyledCard>
 )
 
