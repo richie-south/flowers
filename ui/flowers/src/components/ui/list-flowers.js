@@ -24,7 +24,7 @@ export const StatelessListFlowers = ({
   match,
 }) =>
   redirect ? (
-    <Redirect to={redirect} />
+    <Redirect push to={redirect} />
   ) : (
     <List>
       {flowers.map(({id, name, nextWateringSession}) => (
