@@ -4,7 +4,8 @@ import {
   withHandlers,
   withState,
   defaultProps,
-  lifecycle
+  lifecycle,
+  mapProps
 } from 'recompose'
 import {withSpinner} from 'react-with-spinner'
 import List from 'react-toolbox/lib/list/List'
@@ -22,10 +23,22 @@ import CardTitle from 'react-toolbox/lib/card/CardTitle'
 import CardText from 'react-toolbox/lib/card/CardText'
 import CardActions from 'react-toolbox/lib/card/CardActions'
 import {StyledCard} from './count-down'
-import {Caption, Body} from 'styled-material/dist/src/typography'
+import {Caption, Body, Title} from 'styled-material/dist/src/typography'
 import Button from 'react-toolbox/lib/button/Button'
 
-const enhance = compose(withState('displayMore', 'setDisplayMore', false))
+const enhance = compose(
+  withState('displayMore', 'setDisplayMore', false),
+  mapProps(({timeline, displayMore, ...props}) => {
+    return {
+      ...props,
+      timeline,
+      timelineFirstItems: [...timeline]
+        .reverse()
+        .slice(0, displayMore ? timeline.length : 4),
+      displayMore
+    }
+  })
+)
 
 const StyledTimelineItemWrap = styled(Row)`
   margin-left: 16px;
@@ -89,40 +102,98 @@ const TimelineItem = ({timestamp, children, icon}) => (
   </StyledTimelineItemWrap>
 )
 
-export const StatelessTimeline = ({timeline, displayMore, setDisplayMore}) => (
+export const StatelessTimelineCard = ({
+  timeline,
+  timelineFirstItems,
+  displayMore,
+  setDisplayMore
+}) => (
   <StyledCard>
     <CardTitle subtitle="Flower watering timeline" />
-    {timeline.length ? (
-      timeline
-        .slice(0, displayMore ? timeline.length : 4)
-        .map(({timestamp, amount}, i) => (
-          <TimelineItem
-            key={i}
-            timestamp={new Date(timestamp)}
-            icon={
-              <WaterPumpIcon
-                style={{
-                  height: 16,
-                  fill: materialColors['amber-600']
-                }}
-              />
-            }
-          >
-            <Body>Amount: {amount}</Body>
-          </TimelineItem>
-        ))
+    {timelineFirstItems.length ? (
+      timelineFirstItems.map(({timestamp, amount}, i) => (
+        <TimelineItem
+          key={i}
+          timestamp={new Date(timestamp)}
+          icon={
+            <WaterPumpIcon
+              style={{
+                height: 16,
+                fill: materialColors['amber-600']
+              }}
+            />
+          }
+        >
+          <Body>Amount: {amount}</Body>
+        </TimelineItem>
+      ))
     ) : (
       <EmmptyTimeline />
     )}
     {!displayMore && timeline.length > 4 ? (
-        <Button
-          label="Show more"
-          raised
-          primary
-          onClick={() => setDisplayMore(true)}
-        />
-      ) : null}
+      <Button
+        label="Show more"
+        raised
+        primary
+        onClick={() => setDisplayMore(true)}
+      />
+    ) : null}
   </StyledCard>
 )
 
-export const Timeline = enhance(StatelessTimeline)
+const StyledBox = styled(Column)`
+  padding: 16px;
+  max-width: 500px;
+`
+
+const StyledBoxTitle = styled(Title)`
+  color: #444444;
+  margin-bottom: 32px;
+  padding: 20px 0px 14px;
+`
+
+const StyledBody = styled(Body)`
+  color: ${materialColors['grey-600']};
+`
+
+export const StatelessTimelineBox = ({
+  timeline,
+  timelineFirstItems,
+  displayMore,
+  setDisplayMore
+}) => (
+  <StyledBox>
+    <StyledBoxTitle>Flower watering timeline</StyledBoxTitle>
+    {timelineFirstItems.length ? (
+      timelineFirstItems.map(({timestamp, amount}, i) => (
+        <TimelineItem
+          key={i}
+          timestamp={new Date(timestamp)}
+          icon={
+            <WaterPumpIcon
+              style={{
+                height: 16,
+                fill: materialColors['amber-600']
+              }}
+            />
+          }
+        >
+          <StyledBody>Amount: {amount}</StyledBody>
+        </TimelineItem>
+      ))
+    ) : (
+      <EmmptyTimeline />
+    )}
+    {!displayMore && timeline.length > 4 ? (
+      <Button
+        label="Show more"
+        raised
+        primary
+        onClick={() => setDisplayMore(true)}
+      />
+    ) : null}
+  </StyledBox>
+)
+
+export const TimelineCard = enhance(StatelessTimelineCard)
+export const TimelineBox = enhance(StatelessTimelineBox)
