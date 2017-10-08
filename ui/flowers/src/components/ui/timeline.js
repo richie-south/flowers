@@ -91,7 +91,7 @@ const TimelineItem = ({timestamp, children, icon}) => (
       </Row>
       <Row horizontal="flex-end">
         <StyledTimelineitemCaption>
-          {format(timestamp, 'HH:MM')}
+          {format(timestamp, 'HH:mm')}
         </StyledTimelineitemCaption>
       </Row>
     </Column>
