@@ -12,6 +12,10 @@ import Redirect from 'react-router/Redirect'
 import ListItem from 'react-toolbox/lib/list/ListItem'
 import {GET_FLOWER_LIST_URL} from '../../../config/urls'
 import {ListFlowers} from '../../ui/list-flowers'
+import {Caption, Subhead, Display1} from 'styled-material/dist/src/typography'
+import styled from 'styled-components'
+import {materialColors} from 'styled-material/dist/src/colors'
+import {Column, Row} from 'styled-material/dist/src/layout'
 
 const enhance = compose(
   withState('data', 'setData', {loading: true}),
@@ -40,6 +44,15 @@ const enhance = compose(
   withSpinner()
 )
 
+const StyledDisplay1 = styled(Display1)`
+  color: ${materialColors['grey-900']};
+  font-weight: 900;
+`
+
+const StyledColumn = styled(Column)`
+  padding: 16px;
+`
+
 export const StatelessFlowersOverview = ({
   flowers,
   intl,
@@ -47,10 +60,10 @@ export const StatelessFlowersOverview = ({
   viewFlower,
   match
 }) => (
-  <div>
-    <h1>Flowers list</h1>
+  <StyledColumn>
+    <StyledDisplay1>Flowers</StyledDisplay1>
     <ListFlowers flowers={flowers} match={match} />
-  </div>
+  </StyledColumn>
 )
 
 export const FlowersOverview = enhance(StatelessFlowersOverview)
