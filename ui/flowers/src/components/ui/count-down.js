@@ -62,6 +62,9 @@ const enhance = compose(
       const {setIntervalId, setTimeRemaining, timeRemaining} = this.props
       const intervalId = setInterval(() => {
         const {end} = this.props
+        /**
+         * Check has time passes
+         */
         setTimeRemaining(getTimeRemaining(end))
       }, 1000)
       setIntervalId(intervalId)
@@ -78,15 +81,75 @@ export const StatelessCountDownCard = ({
 }) => (
   <StyledCard>
     <StyledCardTitle
-      subtitle='Next watering sessions in'
+      subtitle="Next watering sessions in"
       title={`${days}d:${hours}h:${minutes}m:${seconds}s`}
     />
   </StyledCard>
 )
 
-export const StatelessCountDownSpan = ({
+const StyledBlockWrap = styled(Column)`
+  margin-top: 16px;
+  padding: 16px;
+  max-width: 500px;
+`
+
+const StyledBlockTitle = styled(Title)`
+  color: #444444;
+  margin-bottom: 32px;
+`
+
+const StyledBlockTimeText = styled(Subhead)`
+  margin-left: 4px;
+  font-weight: 400;
+  color: ${materialColors['grey-600']};
+`
+const StyledBlockTime = styled(Subhead)`color: ${materialColors['amber-500']};`
+
+const StyledRow = styled(Row)`
+  h4 {
+    line-height: 28px !important;
+  }
+  margin-left: 16px;
+`
+
+const suffixS = (val, base) => (val <= 1 ? base : `${base}s`)
+
+export const StatelessCountDownBlock = ({
   timeRemaining: {days, hours, minutes, seconds}
-}) => <span>{`${days}d:${hours}h:${minutes}m:${seconds}s`}</span>
+}) => (
+  <StyledBlockWrap>
+    <StyledBlockTitle>Next watering sessions</StyledBlockTitle>
+    <StyledRow>
+      <StyledBlockTime>{days}</StyledBlockTime>
+      <StyledBlockTimeText>{suffixS(days, 'Day')}</StyledBlockTimeText>
+    </StyledRow>
+    <StyledRow>
+      <StyledBlockTime>{hours}</StyledBlockTime>
+      <StyledBlockTimeText>{suffixS(hours, 'Hour')}</StyledBlockTimeText>
+    </StyledRow>
+    <StyledRow>
+      <StyledBlockTime>{minutes}</StyledBlockTime>
+      <StyledBlockTimeText>{suffixS(minutes, 'Minute')}</StyledBlockTimeText>
+    </StyledRow>
+    <StyledRow>
+      <StyledBlockTime>{seconds}</StyledBlockTime>
+      <StyledBlockTimeText>{suffixS(seconds, 'Second')}</StyledBlockTimeText>
+    </StyledRow>
+  </StyledBlockWrap>
+)
+
+const addIfNotZero = (toCheck, toAdd) => (toCheck === 0 ? '' : toAdd)
+
+const buildTimeString = ({days, hours, minutes, seconds}) =>
+  `${addIfNotZero(days, `${days}d:`)}
+  ${addIfNotZero(hours, `${hours}h:`)}
+  ${addIfNotZero(minutes, `${minutes}m:`)}
+  ${`${seconds}s`}`
+
+export const StatelessCountDownSpan = ({timeRemaining}) => (
+  <span>{buildTimeString(timeRemaining)}</span>
+)
 
 export const CountDownSpan = enhance(StatelessCountDownSpan)
 export const CountDownCard = enhance(StatelessCountDownCard)
+export const CountDownBlock = enhance(StatelessCountDownBlock)
