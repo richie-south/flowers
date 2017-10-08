@@ -16,10 +16,15 @@ import WaterPumpIcon from 'mdi-react/WaterPumpIcon'
 import {post} from '../../../lib/http'
 import {Column, Row} from 'styled-material/dist/src/layout'
 import styled from 'styled-components'
-import {Caption, Subhead, Title} from 'styled-material/dist/src/typography'
+import {
+  Caption,
+  Subhead,
+  Title,
+  Display4
+} from 'styled-material/dist/src/typography'
 import {materialColors} from 'styled-material/dist/src/colors'
-import {Timeline} from '../../ui/timeline'
-import {CountDownCard} from '../../ui/count-down'
+import {TimelineBox} from '../../ui/timeline'
+import {CountDownBlock} from '../../ui/count-down'
 
 const enhance = compose(
   withState('data', 'setData', {loading: true}),
@@ -52,13 +57,13 @@ const enhance = compose(
 )
 
 const StyledCaption = styled(Caption)`
-  color: ${materialColors['grey-700']};
+  color: ${materialColors['grey-600']};
   margin-top: 6px;
 `
 
 const StyledRow = styled(Row)`
-  padding: 16px;
-  border-top: 2px solid rgba(121, 85, 72, 0.1);
+  padding-top: 16px;
+  padding-bottom: 16px;
 `
 
 const StyledBlockSubhead = styled(Subhead)`
@@ -67,7 +72,7 @@ const StyledBlockSubhead = styled(Subhead)`
 `
 
 const Block = ({title, data = 'No data!'}) => (
-  <StyledRow style={{flex: 1}}>
+  <StyledRow>
     <Column horizontal="center">
       <Row>
         <StyledBlockSubhead>
@@ -98,7 +103,7 @@ const Top = ({flower}) => (
       }}
     >
       <Row>
-        <Title style={{opacity: 0.8}}>Flower</Title>
+        <Title style={{opacity: 0.8}}>{flower.name}</Title>
       </Row>
       <Row>
         <Subhead style={{opacity: 0.8}}>{flower.flowerType}</Subhead>
@@ -119,14 +124,44 @@ const Top = ({flower}) => (
   </StyledDivWraper>
 )
 
+const StyledDisplay4 = styled(Display4)`
+  font-weight: 900;
+  color: ${materialColors['grey-100']};
+  text-transform: uppercase;
+  margin-left: 16px;
+  overflow: hidden;
+  max-width: 86vw;
+`
+
+const Top2 = ({flower}) => (
+  <div>
+    <Column horizontal="flex-start">
+      <Row>
+        <StyledDisplay4>{flower.name}</StyledDisplay4>
+      </Row>
+    </Column>
+    <Row horizontal="space-evenly">
+      <Block title="Times watered" data={flower.waterTimeline.length} />
+      <Block
+        title="Optimal intervall"
+        data={flower.waterIntervall.optimal.text}
+      />
+      <Block
+        title="Current intervall"
+        data={flower.waterIntervall.current.text}
+      />
+    </Row>
+  </div>
+)
+
 export const StatelessFlower = ({flower, waterFlower}) => (
   <div>
     {console.log(flower)}
     <Column>
-      <Top flower={flower} />
+      <Top2 flower={flower} />
       <Column horizontal="center">
-        <CountDownCard end={new Date(flower.nextWateringSession)} />
-        <Timeline timeline={flower.waterTimeline.reverse()} />
+        <CountDownBlock end={new Date(flower.nextWateringSession)} />
+        <TimelineBox timeline={flower.waterTimeline} />
       </Column>
     </Column>
     <Button
@@ -138,9 +173,13 @@ export const StatelessFlower = ({flower, waterFlower}) => (
       }}
       floating
       accent
-      icon={<WaterPumpIcon style={{
-        fill: 'white'
-      }}/>}
+      icon={
+        <WaterPumpIcon
+          style={{
+            fill: 'white'
+          }}
+        />
+      }
     />
   </div>
 )
