@@ -7,7 +7,7 @@ import theme from './styles/theme'
 import './styles/theme.css'
 import './App.css'
 import 'isomorphic-fetch'
-
+// background:#FFFFFF;color:#dedddd;box-shadow:initial !important;
 class App extends Component {
   render() {
     return (

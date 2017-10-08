@@ -20,7 +20,6 @@ export const StatelessListFlowers = ({
   setRedirect,
   viewFlower,
   flowers,
-  intl,
   match,
 }) =>
   redirect ? (

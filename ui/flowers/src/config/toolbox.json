@@ -29,7 +29,7 @@
     "animation-duration": "0.3s",
     "color-accent": "#ffc107",
     "color-accent-dark": "#f57c00",
-    "color-primary": "#795548",
+    "color-primary": "#444444",
     "color-primary-contrast": "var(--color-dark-contrast)",
     "color-accent-contrast": "var(--color-dark-contrast)"
   },

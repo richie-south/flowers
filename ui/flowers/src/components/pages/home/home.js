@@ -19,7 +19,7 @@ const FlowerRoutes = () => (
 
 export const StatelessHome = ({}) => (
   <Layout>
-    <Panel>
+    <Panel style={{backgroundColor: '#FFFFFF'}}>
       <AppBar title="Flowers" />
       <FlowerRoutes />
     </Panel>
