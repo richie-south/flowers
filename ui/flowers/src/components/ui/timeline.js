@@ -163,7 +163,7 @@ export const StatelessTimelineBox = ({
   setDisplayMore
 }) => (
   <StyledBox>
-    <StyledBoxTitle>Flower watering timeline</StyledBoxTitle>
+    <StyledBoxTitle>Watering timeline</StyledBoxTitle>
     {timelineFirstItems.length ? (
       timelineFirstItems.map(({timestamp, amount}, i) => (
         <TimelineItem
