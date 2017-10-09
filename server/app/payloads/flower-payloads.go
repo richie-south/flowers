@@ -12,6 +12,12 @@ type WaterTimelineItem struct {
 	Amount    string    `json:"amount"`
 }
 
+type Subscriber struct {
+	Endpoint string `json:"endpoint"`
+	Auth     string `json:"auth"`
+	P256dh   string `json:"p256dh"`
+}
+
 // Flower type
 type Flower struct {
 	ID                  bson.ObjectId       `json:"id" bson:"_id,omitempty"`
@@ -21,6 +27,7 @@ type Flower struct {
 	WateringTimeline    []WaterTimelineItem `json:"waterTimeline" bson:"waterTimeline"`
 	NextWateringSession time.Time           `json:"nextWateringSession" bson:"nextWateringSession"`
 	Health              int                 `json:"helth"`
+	Subscriber          Subscriber          `json:"subscriber"`
 }
 
 // RecivedWatering valid data server can recive when watering flower
