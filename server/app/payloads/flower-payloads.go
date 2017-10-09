@@ -20,6 +20,7 @@ type Flower struct {
 	WaterIntervall      WaterIntervall      `json:"waterIntervall" bson:"waterIntervall"`
 	WateringTimeline    []WaterTimelineItem `json:"waterTimeline" bson:"waterTimeline"`
 	NextWateringSession time.Time           `json:"nextWateringSession" bson:"nextWateringSession"`
+	Health              int                 `json:"helth"`
 }
 
 // RecivedWatering valid data server can recive when watering flower
@@ -44,10 +45,17 @@ func (flower *Flower) Render(w http.ResponseWriter, r *http.Request) error {
 	 * gapfiller on timeline
 	 * timeline of last watering or "event" sessions >--w---w--w--w->
 	 *
+	 * Calculate health of flower in a scale of 0 - 100 where 100 is best and 0 is worst
+	 *  - start with water interval, if overdue lower health scale score,
+	 *  - sircular graph
 	 *
 	 */
 	// default values
 	// check if NextWateringSession date has passed if has passed set date to now
+	flower.Health = 100
+	if len(flower.WateringTimeline) > 0 {
+		//flower.Health = blaa(flower.WateringTimeline[len(flower.WateringTimeline)-1])
+	}
 
 	if flower.WateringTimeline == nil {
 		flower.WateringTimeline = []WaterTimelineItem{}
