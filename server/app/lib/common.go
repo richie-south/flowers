@@ -13,6 +13,10 @@ func DifferenceInDaysHoursToIntervall(latest time.Time, second time.Time) payloa
 	differenceInDays := int(l.Sub(s).Hours() / 24)
 	differenceInHours := int(l.Sub(s).Hours())
 
+	if differenceInHours >= 24 {
+		differenceInHours = differenceInHours - (24 * differenceInDays)
+	}
+
 	return payloads.Intervall{
 		Days:  differenceInDays,
 		Hours: differenceInHours,
