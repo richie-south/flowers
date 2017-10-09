@@ -112,7 +112,7 @@ const StyledRow = styled(Row)`
   margin-left: 16px;
 `
 
-const suffixS = (val, base) => (val <= 1 ? base : `${base}s`)
+const suffixS = (val, base) => (val === 1 ? base : `${base}s`)
 
 export const StatelessCountDownBlock = ({
   timeRemaining: {days, hours, minutes, seconds}
