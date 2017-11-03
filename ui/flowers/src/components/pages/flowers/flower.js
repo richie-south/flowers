@@ -130,7 +130,7 @@ const StyledDisplay4 = styled(Display4)`
   text-transform: uppercase;
   margin-left: 16px;
   overflow: hidden;
-  max-width: 86vw;
+  max-width: 92vw;
 `
 
 const Top2 = ({flower}) => (
